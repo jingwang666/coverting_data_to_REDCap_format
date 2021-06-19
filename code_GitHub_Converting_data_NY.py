@@ -20,39 +20,24 @@ import datetime
 import string
 import re
 
-folder9_states = r'\\cdc.gov\project\NCEZID_DHCPP_IDPB_Operations\Staff_Folders\Wang\1_Projects\9_CSTE_project_01112021\Submitted by States'
-folder9_states_backup = r'\\cdc.gov\project\NCEZID_DHCPP_IDPB_Operations\Staff_Folders\Wang\1_Projects\9_CSTE_project_01112021\Submitted by States\backup_files'
-folder9_states_datafiles = r'\\cdc.gov\project\NCEZID_DHCPP_IDPB_Operations\Staff_Folders\Wang\1_Projects\9_CSTE_project_01112021\Submitted by States\original_data'
-# folder_onedrive_crosswalk = r'C:\Users\ogf7\CDC\NCEZID-DHCPP_IDPB_Epi_Ops - CSTE Unexplained Deaths CoAg\RedCap'
+folder9_states = r'\\Submitted by States'
+folder9_states_backup = r'\\Submitted by States\backup_files'
+folder9_states_datafiles = r'\\Submitted by States\original_data'
 
 date_today = datetime.datetime.now().strftime('%m%d%y')
 # import the data file and crosswalk file
-filename_nyc = r'\Possible Viral Resp Deaths through 4-25-21 CDC upload 4-28-21.xlsx'
-filename_nyc_crosswalk = r'\NYC_OCME_CSTE_crosswalk.xlsx'
-zdf_template = pd.read_csv(folder9_states + r'\SurveillanceForUnexplainedResp_ImportTemplate_2021-06-11.csv'  )
+filename_nyc = r'\Deaths through 4-25-21.xlsx'
+filename_nyc_crosswalk = r'\crosswalk.xlsx'
+zdf_template = pd.read_csv(folder9_states + r'\ImportTemplate_2021-06-11.csv'  )
 zdf_nyc = pd.read_excel(folder9_states_datafiles + filename_nyc  )
 zdf_nyc_crosswalk = pd.read_excel(folder9_states + filename_nyc_crosswalk)
-zdf_nyc_crosswalk.to_excel(folder9_states_backup + r'\NYC_OCME_CSTE_crosswalk_' + date_today +  '.xlsx', index=False)
+zdf_nyc_crosswalk.to_excel(folder9_states_backup + r'\crosswalk' + date_today +  '.xlsx', index=False)
 
 
 # initiation - reset the headers of the data file  
 list_col_names = zdf_nyc.iloc[0,:]
 zdf_nyc.set_axis(list_col_names, axis='columns', inplace = True)     
 zdf_nyc = zdf_nyc.iloc[1:,:]
-
-
-def format_date(zdf, list_vars_date):
-    list_cols = list(zdf.columns)
-    for x in list_vars_date:
-        if x in list_cols:
-            if zdf[x].dtypes != object:
-                zdf[x] = zdf[x].dt.strftime('%m/%d/%Y')
-            else:
-                continue
-        else:
-            continue
-    return zdf
-
 
 
 def nyc():
@@ -523,13 +508,7 @@ def nyc():
                                'autop_signif_liver_find', 'autop_signif_brain_find', ]
       
     
-    # !!! need to remove this code in the future!!!
-    # zdf_nyc2[ 'finding_micro_respir' ] = '1, Tracheitis | 2, Bronchitis | 3, Bronchiolitis | 4, Diffuse alveolar damage | 5, Capillaritis | 6, Vasculitis | 7, Interstitial pneumonitis | 8, Fibrin thrombi | 9, Pulmonary emboli | 10, Bronchopneumonia | 11, Intravascular leukocytosis | 12, Pulmonary hemorrhage | 13, Other' 
-    # zdf_nyc2[ 'finding_micro_cardiovac' ] = '1, Myocarditis | 2, Other'
-    # zdf_nyc2[ 'finding_micro_kidney' ] = '1, Fibrin thrombi | 2, Interstitial nephritis | 3, Other'
-    # zdf_nyc2[ 'finding_micro_liver' ] = '1, Intravascular leukocytosis | 2, Other'
-    # zdf_nyc2[ 'finding_micro_brain' ] = '1, Meningitis | 2, Encephalitis | 3, Thrombi | 4, Other'
-    
+   
     # get findings_yesno
     for i in range( len( list_vars_finding_micro_original ) ):
 
@@ -807,7 +786,22 @@ def check_the_data():
     zz = ztest.dtypes
     zdf_nyc2['death_date_m_d_y'].astype()
     set(zz)
+
     
+def format_date(zdf, list_vars_date):
+    list_cols = list(zdf.columns)
+    for x in list_vars_date:
+        if x in list_cols:
+            if zdf[x].dtypes != object:
+                zdf[x] = zdf[x].dt.strftime('%m/%d/%Y')
+            else:
+                continue
+        else:
+            continue
+    return zdf
+
+
+
     # end - test or draft
     '''
     
